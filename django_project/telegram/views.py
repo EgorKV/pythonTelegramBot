@@ -4,18 +4,19 @@ from .teleBot import TeleBot
 from .models import Chat
 from rest_framework.views import APIView
 from rest_framework import authentication, permissions
+from rest_framework.permissions import IsAdminUser
 from .serializer import ChatSerializer
 from rest_framework.response import Response
 from datetime import datetime
 from django.utils.translation import gettext as _, activate
-from django.utils.text import _
-from django.utils.text import format_lazy
-urlT = 'https://api.telegram.org/bot899061394:AAFefj4ey2FMpzOkI08CN1Xri6R9SuiEFRo/'
-token = "899061394:AAFefj4ey2FMpzOkI08CN1Xri6R9SuiEFRo"
+from django.utils.text import format_lazy as _
+TOKEN = "123456789:XXXXXXXXXXXXX"
+URL = f'https://api.telegram.org/{TOKEN}/'
 BOT_NAME = "@noostarBot"
 
 
 class ListStudents(APIView):
+    permission_classes = [IsAdminUser]
 
     def get(self, request, format=None):
         chats = Chat.objects.all()
@@ -25,9 +26,9 @@ class ListStudents(APIView):
 
 @csrf_exempt
 def botresponse(request):
-    bot = TeleBot(request, token, urlT)
-    json_data = bot.received_json_data
+    bot = TeleBot(request, TOKEN, UR123456789:XXXXXXXXXXXXX    json_data = bot.received_json_data
     result = 500
+
     if "message" in json_data:
         chat_id = json_data["message"]["chat"]["id"]
         chat_time = json_data["message"]["date"]
@@ -43,6 +44,7 @@ def botresponse(request):
         chat = Chat.objects.get(chat_id=chat_id)
     language = chat.language
     activate(language)
+
     if "message" in json_data:
         if "text" in json_data["message"]:
             if json_data["message"]["text"] == "/start":
@@ -191,18 +193,8 @@ def botresponse(request):
                 }]])
             else:
                 pass
-                # if language == 'uk':
-                #     text = "Щоб почати діалог з ботом, скористуйтеся командою /start"
-                # else:
-                #     text = "Что бы начать диалог с ботом, воспользуйтесь командой /start"
-                # result = bot.sendMessageWithKeyboard(text, [[]])
         else:
             pass
-            # if language == 'uk':
-            #     text = "Щоб почати діалог з ботом, скористуйтеся командою /start"
-            # else:
-            #     text = "Что бы начать диалог с ботом, воспользуйтесь командой /start"
-            # result = bot.sendMessageWithKeyboard(text, [[]])
     else:
         text = _("For starting conversation with bot, you can use command'/start'")
         result = bot.sendMessageWithKeyboard(text, [[]])
